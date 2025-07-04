@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Contact Book</title>
+    </head>
+    <body>
+        <div id="table">Contacts Loading...</div>
+        <button id="refresh" type="button">refresh</button>
+        <button onclick="addContact" id="addContact" type="button">Add Contact</button>
+    
+        <script src="config.js"></script>
+        <script>
+            document.getElementById("refresh").addEventListener('click', fetchContacts);
+            document.getElementById("addContact").addEventListener('click', addContact);
+
+            window.onload = fetchContacts;
+
+            function fetchContacts() {
+                fetch(rootPath + "controller/get-contacts/")
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    displayOutput(data);
+                    console.log(data);
+                })
+                .catch(function() {
+                    document.getElementById("table").innerText = "Failed to load contacts.";
+                });
+            }
+
+            function displayOutput(data) {
+                let output = "<table border='1'><tr><th>Avatar</th><th>First Name</th><th>Last Name</th></tr>";
+                for (let a = 0; a < data.length; a++) {
+                    output += `
+                       <tr onclick="editContact(${data[a].id})">
+                          <td><img src="${rootPath}controller/uploads/${data[a].avatar}" alt="avatar" width="50"/></td>
+                          <td><h5>${data[a].firstname}</h5></td>
+                          <td><h5>${data[a].lastname}</h5></td>
+                       </tr>
+                    `;
+                }
+                output += "</table>";
+                document.getElementById("table").innerHTML = output;
+            }
+
+            function addContact(){ 
+                window.open("add-contacts.html", "_self");
+                function onclick() {
+                    window.open("add-contacts.html", "_self");
+                }   
+            }
+
+            function editContact(id) {
+                window.open("edit-contact.html?id=" + id, "_self");
+            }
+
+            
+        </script>
+    </body>
+</html>
